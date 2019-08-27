@@ -23,7 +23,7 @@ library(rgdal)
 library(mapview)
 
 #setting working directory
-setwd("C:/Users/GeogLabCommonAccess/Desktop/Inclass_export/r_class1")
+setwd("C:/Users/GeogLabCommonAccess/Desktop/Class1")
 
 #reading data and ploting
 elevation<-raster('elev.tif')
