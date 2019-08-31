@@ -1,0 +1,201 @@
+---
+title: "Lab Assignment 1"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+## Practise
+
+Installing packages
+```{r}
+install.packages('rgdal')
+install.packages('raster')	
+install.packages("GISTools")
+install.packages('rgeos')
+install.packages('maptools')
+install.packages('mapview')
+```
+Loading libraries
+```{r}
+library(raster)
+library(rgdal)
+library(GISTools)
+library(rgeos)
+library(maptools)
+library(mapview)
+```
+
+Reading the shape file 
+```{r}
+pophu<-readOGR('.',layer='y2010_51_pophu')
+
+```
+
+ploting the shape file
+```{r}
+plot(pophu)
+```
+
+Plotting shap file with attributes
+```{r}
+choropleth(pophu,pophu$POP10)
+```
+```{r}
+choropleth(pophu,pophu$HOUSING10)
+```
+
+
+Filtering
+```{r}
+pophu_sub <- pophu[pophu$POP10>100,]
+```
+
+Rasters
+Reading raster
+```{r}
+nlcd<-raster('nlcd.tif')
+nlcd
+```
+ploting
+```{r}
+plot(nlcd)
+mapview(nlcd)
+```
+Obtain Raster Attributes
+```{r}
+nlcd
+is.factor(nlcd)
+
+```
+clipping
+```{r}
+Montgomery <- countries[countries$NAME=='Montgomery',] 
+nlcdsub <- crop(nlcd, extent(Montgomery))
+plot(nlcdsub)
+plot(Montgomery,add=TRUE)
+
+```
+Masking
+```{r}
+nlcdsub <- mask(nlcdsub, Montgomery)
+plot(nlcdsub)
+```
+Use length() function to report total pixel numbers for a specific land cover type. 
+```{r}
+length(nlcdsub[nlcdsub==11])
+```
+
+masking and ploting as per criteria
+```{r}
+forest <- nlcdsub
+forest[forest>=41&forest<=43]=1
+forest[forest!=1]=0
+plot(forest)
+```
+
+
+
+
+
+
+## Assignment 
+### Question one
+```{r}
+countries<-readOGR('.',layer='counties')
+```
+
+
+### Question two:
+2000
+```{r}
+sum(countries$POP2000)
+mean(countries$POP2000)
+```
+2003
+```{r}
+sum(countries$POP2003)
+mean(countries$POP2003)
+```
+
+### Question 3
+```{r}
+M_P<-countries[countries$NAME=="Montgomery"|countries$NAME=="Pulaski",]
+plot(M_P)+polygonsLabel(M_P,M_P$NAME)
+```
+
+### Question 4
+
+```{r}
+nlcd<-raster('nlcd.tif')
+Montgomery <- countries[countries$NAME=='Montgomery',] 
+nlcdsub <- crop(nlcd, extent(Montgomery))
+nlcdsub <- mask(nlcdsub, Montgomery)
+plot(nlcdsub)
+```
+
+Deciduous forest (code=41)
+```{r}
+length(nlcdsub[nlcdsub==41])
+length(nlcdsub[nlcdsub==41])*xres(nlcdsub)*yres(nlcdsub)/1e6
+```
+
+Evergreen forest (code=42)
+```{r}
+length(nlcdsub[nlcdsub==42])
+length(nlcdsub[nlcdsub==42])*xres(nlcdsub)*yres(nlcdsub)/1e6
+```
+
+Mixed forest (code=43)
+```{r}
+length(nlcdsub[nlcdsub==43])
+length(nlcdsub[nlcdsub==43])*xres(nlcdsub)*yres(nlcdsub)/1e6
+```
+
+
+### Question5
+
+```{r}
+urban=nlcdsub
+urban[urban>=21&urban<=24]=1
+urban[urban!=1]=0
+plot(urban)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
