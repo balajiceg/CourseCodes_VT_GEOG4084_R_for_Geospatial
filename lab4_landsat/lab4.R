@@ -1,4 +1,6 @@
 #19092019
+# getValues(raster_variable) //to get the raster values as vector 
+# alf<-data.frame(band1=getValues(landsat))
 
 install.packages('raster')
 install.packages('GISTools')
@@ -15,7 +17,6 @@ library(mapview)
 #reading the image
 landsat_full<-stack('./landsat.tif')
 
-#selecting bands
 landsat<-landsat_full
 plot(landsat)
 crs(landsat)
@@ -37,6 +38,7 @@ training_df$label<-as.factor(training_poly_ras[training_poly_ras>0])
 
 
 #creating and training rf model
+
 rfmodel <- randomForest(label ~. , data = training_df)
 
 #entire dataset
@@ -51,7 +53,8 @@ rf_pred <- predict(rfmodel, all_df)
 output_label<-training_poly_ras
 output_label<-setValues(output_label, rf_pred)
 output_label[landsat[[1]]==0 & landsat[[2]]==0 & landsat[[3]]==0 ]<-NA
-plot(output_label[1:1000,1:1000],col=c('red','yellow','green','blue'),legend = c("Urban", "Cropland","forest","water"))
+plot(output_label,col=c('red','yellow','green','blue'),legend = FALSE)
+legend("topleft",legend = c("Urban", "Cropland","forest","water"),fill =c('red','yellow','green','blue'))
 
 #writing the output image
 writeRaster(output_label,filename = 'classified', format='GTiff',overwrite=TRUE)
