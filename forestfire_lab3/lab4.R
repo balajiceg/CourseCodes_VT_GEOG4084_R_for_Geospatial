@@ -65,7 +65,8 @@ plot(landcover_w,main="landcover filtered")
 water<-landcover
 water[water!=1]<-NA
 water_b<-buffer(water,500)
-water_b[is.na(water_b)]<-0
+water_b[!is.na(water_b)]<-0
+water_b[is.na(water_b)]<-1
 plot.new()
 plot(water_b,main="water with buffer filtered")
 
